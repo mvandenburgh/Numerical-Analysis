@@ -15,25 +15,12 @@ def quadratic(a, b, c):
 def heartEq(x):
     return quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2))
 
-# while(True):
-#     try:
-#         print(quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2)))
-#         print('X = ' + str(-1.41421356))
-#         x-=0.000000001
-#     except:
-#         current = x + 0.000000001
 
-# print(heartEq(-0.8))
-# print(circleY(-0.8, 0, 0.37, 1.0245))
-# 4/0
-
-# center = - sqrt(2)
 incrementBy = 0.00001
-# y = 1.41421356#2373095
 y=sqrt(2)
 keepGoing = True
-center = 0.3824
-# center = y-0.0001 
+# center = 0.3824
+center = y-0.0001 
 # while the center of the disc is inside the heart
 while(center > -sqrt(2) and keepGoing):
     radius = y - center
