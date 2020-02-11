@@ -1,5 +1,5 @@
 from math import sqrt
-import sys
+# import sys
 
 def circleY(x, h, k, r):
     return (k + sqrt(r**2 - (x-h)**2), k - sqrt(r**2 - (x-h)**2))
@@ -15,42 +15,43 @@ def quadratic(a, b, c):
 def heartEq(x):
     return quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2))
 
-# print(heartEq(0.5))
-# sys.exit()
+# while(True):
+#     try:
+#         print(quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2)))
+#         print('X = ' + str(-1.41421356))
+#         x-=0.000000001
+#     except:
+#         current = x + 0.000000001
 
+# print(heartEq(-0.8))
+# print(circleY(-0.8, 0, 0.37, 1.0245))
+# 4/0
 
 # center = - sqrt(2)
-y = 1.414213562373095
+incrementBy = 0.00001
+# y = 1.41421356#2373095
+y=sqrt(2)
 keepGoing = True
-center = y-0.0000001
+center = 0.3824
+# center = y-0.0001 
+# while the center of the disc is inside the heart
 while(center > -sqrt(2) and keepGoing):
     radius = y - center
     print("Center @ (0, " + str(center) + ")")
-    print("Radius: " + str(radius))
-    # current = -1.41421356 # left most point on heart
-    current = center - radius
+    print("Radius: " + str(radius) + '\n')
+    current = 0 - radius
     while (current < 0):
-        print("X Point: " + str(current) + "\n")
-        if (heartEq(current)[1] > circleY(current, 0, center, radius)[1]):
-            
+        if (heartEq(current + incrementBy)[1] >= circleY(current + incrementBy, 0, center, radius)[1]):
             print("FINAL radius: " + str(radius))
             print("Final center: (0, " + str(center) + ")")
             keepGoing = False
             break
-        current += 0.01
-    center -= 0.0001
-    # print(center)
-    # while (current > center - radius): # while we're stil inside circle
+        current += incrementBy
+    center -= incrementBy
+    
 
 # print(circleX(0, 0, 0, sqrt(2)))
 
-
-x = -1.41421356
-# while(True):
-#     print('X = ' + str(x))
-#     print(quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2)))
-#     # print('X = ' + str(x))
-#     x-=0.000000001
 # while (True)
 # print(quadratic(1, -sqrt(2), -1.25))
 print()
