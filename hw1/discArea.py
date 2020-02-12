@@ -1,40 +1,30 @@
 from math import sqrt
 
-import numpy as np
-
-
-def circleY(x, h, k, r):
-    return (k + sqrt(r**2 - (x-h)**2), k - sqrt(r**2 - (x-h)**2))
-
-def circleX(y, h, k, r):
-    return (h + sqrt(r**2 - (y-k)**2), h - sqrt(r**2 - (y-k)**2))
-
+# Quadratic equation solver
 def quadratic(a, b, c):
-    d = b**2-4*a*c 
-    # print(d)
+    d = b**2-4*a*c
     return (((-b + sqrt(d)) / 2 * a), ((-b - sqrt(d)) / 2 * a))
 
+# equation of the disc
+def discEq(x, h, k, r):
+    return (k + sqrt(r**2 - (x-h)**2), k - sqrt(r**2 - (x-h)**2))
+
+# equation of the heart
 def heartEq(x):
     return quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2))
 
-def distance(xc, yc, xp, yp):
-    return sqrt((xp-xc)**2 + (yp-yc)**2)
-
-incrementBy = 0.00001
+incrementBy = 0.00001 # value to increment by when checking for intersection of disc and heart.
 y=sqrt(2)
-keepGoing = True
-# center = 0.3824
-center = y-0.0001
-
+keepGoing = True # boolean flag to terminate while loop when radius/center are found
+# center = 0.3824 Use this to get closer
+center = y - 0.0001
 while(center > -sqrt(2) and keepGoing): # while the center of the disc is inside the heart
     radius = y - center
-    print("Center @ (0, " + str(center) + ")")
-    print("Radius: " + str(radius) + '\n')
     current = 0 - radius
     while (current < 0):
-        if (heartEq(current + incrementBy)[1] >= circleY(current + incrementBy, 0, center, radius)[1]):
-            print("FINAL radius: " + str(radius))
-            print("Final center: (0, " + str(center) + ")")
+        if (heartEq(current + incrementBy)[1] >= discEq(current + incrementBy, 0, center, radius)[1]):
+            print("Approximated radius disc: " + str(radius))
+            print("Approximated center of disc (x, y): (0, " + str(center) + ")")
             keepGoing = False
             break
         current += incrementBy
