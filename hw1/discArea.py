@@ -3,7 +3,7 @@
 #################################################
 
 
-from math import sqrt
+from math import sqrt, pi
 from time import time
 startTime = time()
 
@@ -23,17 +23,19 @@ def heartEq(x):
 incrementBy = 0.0001 # value to increment by when checking for intersection of disc and heart.
 y=sqrt(2) # y-value of the top of the disc
 keepGoing = True # boolean flag to terminate while loop when radius/center are found
-# center = 0.3824 Use this to get closer
-center = y - incrementBy
+center = 0.3824 # Use this to get closer
+# center = y - incrementBy
 while(center > -sqrt(2) and keepGoing): # while the center of the disc is inside the heart
     radius = y - center
     current = 0 - radius
     while (current < 0):
         if (heartEq(current + incrementBy)[1] >= discEq(current + incrementBy, 0, center, radius)[1]):
             print("Approximated radius disc: " + str(radius))
-            print("Approximated center of disc (x, y): (0, " + str(center) + ")")
+            print("Approximated center of disc (x, y): (0.0, " + str(center) + ")")
             print("Program finished in " + str(time() - startTime) + " seconds.")
             keepGoing = False
             break
         current += incrementBy
     center -= incrementBy
+
+print("Area of disc = " + str(pi * radius**2))
