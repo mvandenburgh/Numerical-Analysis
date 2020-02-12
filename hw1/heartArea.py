@@ -1,3 +1,7 @@
+##################################################
+# This program calculates the area of the heart. #
+##################################################
+
 from math import sqrt
 from scipy import integrate # TODO: remove this
 from time import time

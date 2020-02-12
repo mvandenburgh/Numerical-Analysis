@@ -1,3 +1,8 @@
+#################################################
+# This program calculates the area of the disc. #
+#################################################
+
+
 from math import sqrt
 from time import time
 startTime = time()
@@ -16,7 +21,7 @@ def heartEq(x):
     return quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2))
 
 incrementBy = 0.0001 # value to increment by when checking for intersection of disc and heart.
-y=sqrt(2)
+y=sqrt(2) # y-value of the top of the disc
 keepGoing = True # boolean flag to terminate while loop when radius/center are found
 # center = 0.3824 Use this to get closer
 center = y - incrementBy
