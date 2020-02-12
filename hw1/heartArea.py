@@ -1,10 +1,6 @@
-from math import sqrt, pi, sin
-from time import time
-import numpy as np
+from math import sqrt
 from scipy import integrate
-
-import sys
-
+from time import time
 startTime = time()
 
 
@@ -19,4 +15,4 @@ def bottomLeft(x):
 area = 2 * (integrate.quad(topLeft, -sqrt(2), 0)[0] - integrate.quad(bottomLeft, -sqrt(2), -1)[0] + integrate.quad(bottomLeft, 0, -1)[0])
 print("Area of heart: " + str(area))
 
-print("Runtime: " + str(time()-startTime) + " seconds")
+print("Program finished in " + str(time()-startTime) + " seconds")
