@@ -1,5 +1,7 @@
 from math import sqrt
-# import sys
+
+import numpy as np
+
 
 def circleY(x, h, k, r):
     return (k + sqrt(r**2 - (x-h)**2), k - sqrt(r**2 - (x-h)**2))
@@ -15,14 +17,16 @@ def quadratic(a, b, c):
 def heartEq(x):
     return quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2))
 
+def distance(xc, yc, xp, yp):
+    return sqrt((xp-xc)**2 + (yp-yc)**2)
 
 incrementBy = 0.00001
 y=sqrt(2)
 keepGoing = True
 # center = 0.3824
-center = y-0.0001 
-# while the center of the disc is inside the heart
-while(center > -sqrt(2) and keepGoing):
+center = y-0.0001
+
+while(center > -sqrt(2) and keepGoing): # while the center of the disc is inside the heart
     radius = y - center
     print("Center @ (0, " + str(center) + ")")
     print("Radius: " + str(radius) + '\n')
@@ -35,13 +39,3 @@ while(center > -sqrt(2) and keepGoing):
             break
         current += incrementBy
     center -= incrementBy
-    
-
-# print(circleX(0, 0, 0, sqrt(2)))
-
-# while (True)
-# print(quadratic(1, -sqrt(2), -1.25))
-print()
-# print(quadratic(1, (2 * sqrt(0.5)), (-0.5 - (0.5**2) + 2)))
-
-    
