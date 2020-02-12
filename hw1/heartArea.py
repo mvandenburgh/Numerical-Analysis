@@ -9,7 +9,8 @@ startTime = time()
 
 def integrate(f, a, b, n=10000):
     """ Computes the definite integral of the function f from a to b using Simpson's Rule. 
-    Optional argument n to provide number of subdivisions (default 10000)."""
+    Optional argument n to provide number of subdivisions (default 10000).
+    Exception handling present to handle slight round-off/truncation errors that cause the function to be undefined."""
     deltaX = (b-a) / n
     sum = 0
     for i in range(n):
