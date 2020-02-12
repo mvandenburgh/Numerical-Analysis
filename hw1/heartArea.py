@@ -1,8 +1,9 @@
 from math import sqrt
-from scipy import integrate
+from scipy import integrate # TODO: remove this
 from time import time
 startTime = time()
 
+# TODO: Implement my own integration algorithm
 
 # equation of the top part of the heart on the left side of the y-axis
 def topLeft(x):
