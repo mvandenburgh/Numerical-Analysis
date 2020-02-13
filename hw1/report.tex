@@ -1,0 +1,245 @@
+\documentclass[12pt,letterpaper]{article}
+\usepackage{fullpage}
+\usepackage[top=2cm, bottom=3.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{lastpage}
+\usepackage{enumerate}
+\usepackage{fancyhdr}
+\usepackage{mathrsfs}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{setspace}
+
+\titlespacing{\section}{0pt}{0.5in}{0pt}
+% \titlespacing{command}{left spacing}{before spacing}{after spacing}
+% \titlespacing*{\section}
+% {0pt}{5.5ex plus 1ex minus .2ex}{4.3ex plus .2ex}
+
+
+% \setlength{\parskip}{0pt}
+% \setlength{\parsep}{1.0in}
+% \setlength{\headsep}{0pt}
+% \setlength{\topskip}{0pt}
+% \setlength{\topmargin}{0pt}
+% \setlength{\topsep}{0pt}
+% \setlength{\partopsep}{0pt}
+
+\hypersetup{%
+  colorlinks=true,
+  linkcolor=blue,
+  linkbordercolor={0 0 1}
+}
+ 
+\renewcommand\lstlistingname{Algorithm}
+\renewcommand\lstlistlistingname{Algorithms}
+\def\lstlistingautorefname{Alg.}
+
+% \lstdefinestyle{Python}{
+%     language        = Python,
+%     frame           = lines, 
+%     basicstyle      = \footnotesize,
+%     keywordstyle    = \color{blue},
+%     stringstyle     = \color{green},
+%     commentstyle    = \color{red}\ttfamily
+% }
+\lstset{
+  basicstyle=\ttfamily,
+  mathescape
+}
+
+\setlength{\parindent}{0.0in}
+\setlength{\parskip}{0.1in}
+
+% Edit these as appropriate
+\newcommand\course{AMS 326: Numerical Analysis}
+\newcommand\hwnumber{5}                  % <-- homework number
+\newcommand\name{Michael VanDenburgh}           % <-- NetID of person #1
+\newcommand\id{SBU ID: 111520385}
+\newcommand\duedate{February 14, 2019}
+
+\pagestyle{fancyplain}
+\headheight 35pt
+\lhead{\NetIDa}
+\lhead{\name\\\id}                 % <-- Comment this line out for problem sets (make sure you are person #1)
+% \chead{\textbf{\Large HW \hwnumber}}
+\rhead{\duedate \\ \course}
+\lfoot{}
+\cfoot{}
+\rfoot{\small\thepage}
+\headsep 0.2in
+
+\usepackage{listings}
+\usepackage{color}
+
+\usepackage{setspace}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+% For rectangle backgrounds
+\usepackage{xcolor}
+\usepackage{mdframed}
+
+% For code
+\usepackage{minted}
+
+\begin{document}
+\begin{spacing}{1}
+
+\begin{center}
+    \LARGE{\underline{\textbf{Homework 1 Report}}}
+\end{center}
+
+\section*{\underline{Problem 1.1}}
+\vspace{2em}
+
+\section{Problem Description}
+\begin{spacing}{1.2}
+The heart equation is $x^2 + (y-\sqrt{|x|})^2=2$. A disc of maximum area is dug out of the heart. Use a numerical integration algorithm to compute the area of the remaining heart and estimate the number of floating-point operations needed for each method used.
+\section{Algorithm Description and Pseudo-Code}
+\subsection{Calculating the area of the disc}
+First, algebraically rearrange the heart equation: 
+\begin{mdframed}[backgroundcolor=gray!5]
+$y^{2}+(-2\sqrt{\left|x\right|})y+(\left|x\right|+x^{2}-2)=0$. 
+\end{mdframed}
+% Calculate the smallest x value on the heart (the rightmost point) using the following algorithm (written in pseudo-code): 
+% \begin{verbatim}
+%     x = 0
+%     while (x is not undefined):
+%         x = solution to y^2 + (-2 * sqrt(|x|)) * y + (-|x| - x^2 + 2) = 0
+%         x -= 0.000000001
+%     return x
+% \end{verbatim}
+
+% The value is found to be approximately -1.41421356 (9 significant digits accuracy). Now this can be used to help find the center and radius of the disc. 
+The center and radius of the disc can be computed numerically as follows. \newline
+Using the rearranged heart equation, I can calculate the two $y$ values of the heart at $x=0$ as $-\sqrt{2}$ and $\sqrt{2}$. The lower value, which is the $y$ value at which the two halves of the heart meet at the bottom, is not useful since the disc clearly doesn't touch it, as observed from viewing the picture. However, the higher value, which is the $y$ value at which two halves of the heart meet at the top, is the highest point (maximum $y$ value) of the disc; this can be reasoned by observing that (1) $x=0$ has the lowest $y$ value of all the points on the "top" of the heart, and (2) the disc is the maximum possible size while staying inside the heart. Since the heart is symmetric, the disc must also be symmetric, therefore for the disc to be max area within the heart, its center must be at $x=0$. To get the $y$ value of the center, the following algorithm can be used.\newline
+Start just below the top of the disc $y=\sqrt{2}$ (something like $y=\sqrt{2} - 0.0001$, depending on how many significant digits are needed). Consider this value as the center of the current disc, with the radius being the distance from the center to the top of the disc, $\sqrt{2} - center$. Check if the disc intersects the heart at any point (only one side is necessary here since the graph is symmetric, I chose the left (negative) half). If it does, the current center and radius are approximately equal to the center and radius of the disc. Otherwise, repeat the process again with a slightly smaller $y$ value for center. Visually, I am moving the center of the disc with a maximum radius down the $y$ axis until it it intersects with the heart. \newline
+Using this algorithm, I approximated the center of the disc to be at coordinates (0, 0.381449999999999) with a radius of 1.0327635623730962. The area of the disc can now be calculated: \newline
+\begin{mdframed}[backgroundcolor=gray!5]
+$A = \pi r^2 \approx ???????????????$
+\end{mdframed}
+\subsection{Calculating the area of the heart}
+Analytically, the equation of the heart can be split down the $y$ axis into two halves yielding two equations for each half of the heart:\newline
+\begin{mdframed}[backgroundcolor=gray!5] 
+$y^{2}+(-2\sqrt{-x})y+(\left|x\right|+x^{2}-2)=0$ (left side) %\newline
+\end{mdframed}
+\begin{mdframed}[backgroundcolor=gray!5] 
+$y^{2}+(-2\sqrt{x})y+(\left|x\right|+x^{2}-2)=0$ (right side)
+\end{mdframed} %\newline
+Since the heart is symmetric it's only necessary to find the area of one of the halves and double it; the left side is used here. The equation can be decomposed into two functions as follows:\newline
+\begin{mdframed}[backgroundcolor=gray!5]
+$$y^{2}+(-2\sqrt{-x})y+(\left|x\right|+x^{2}-2)=0$$\begin{center}$\Downarrow$ \end{center}
+\begin{center}
+$y=\sqrt{-x}\pm\sqrt{-x^{2}-x-\left|x\right|+2}$
+\end{center}
+\end{mdframed}
+From these equations, it's clear from the presence of $-x$ under the square root that $x$ must always be zero or negative, which makes sense since the equation represents the left half of the heart. It can also be algebraically determined that $x$ is undefined for any value less than $-\sqrt{2}$, which means $-\sqrt{2}$ represents the point furthest to the left on the heart.
+Using these two functions, we can represent the area inside the heart:
+\begin{mdframed}[backgroundcolor=gray!5]
+$$A = 2 \Bigg[\int_{-\sqrt{2}}^{0} (\sqrt{-x} + \sqrt{-x^2-x-|x|+2})dx - \int_{-\sqrt{2}}^{-1} (\sqrt{-x} - \sqrt{-x^2-x-|x|+2})dx$$ $$ + \int_{0}^{-1} (\sqrt{-x} - \sqrt{-x^2-x-|x|+2})dx \Bigg]$$
+\end{mdframed}
+% FINAL radius: 1.03276
+% Final center: (0, 0.38145)
+Now, to solve for the area I use Simpson's Rule for numerically approximating integrals (Python code included in seperate file). (.....EXPLAIN MORE............)
+\newline Pseudo-code:
+\begin{lstlisting}
+    integrate(f, a, b, n) { /* f=function, a=lower bound, b=upper bound, 
+                            n=number of subdivisions */
+        $\Delta$x = $\frac{b - a}{n}$
+        sum = 0
+        for i = 0 through n, do {
+            x = a + i * $\Delta$x
+            if i == 0 then sum = sum + f(x)
+            else if i == n then sum += f(a * n * $\Delta$x)
+            else if i is odd then sum = sum + 4 * f(x)
+            else sum = sum + 2 * f(x)
+        }
+        return ($\Delta$x / 3) * sum
+    }
+\end{lstlisting}
+Using this algorithm with $n = 10000000$ results in an approximate area of 6.283185227879018. (13 seconds)
+\end{spacing}
+
+\section{Results}
+Now that the area of the entire heart () and disc () are known, the area of the remaining heart can be calculated by subtracting them.
+\section{Brief comments on performance \& other questions}
+When finding the 
+
+\newpage
+
+\section*{\underline{Problem 1.2}}
+\vspace{2em}
+
+\setcounter{section}{0} % reset section counter
+
+\section{Problem Description}
+
+Use the bisection method to find the roots of the following equation:
+
+\begin{mdframed}[backgroundcolor=gray!5] 
+$f(x) = 2.020^{-x^3} - x^3 cos(x^4) - 1.984$ 
+\end{mdframed}
+
+\section{Algorithm Description and Pseudo-Code}
+
+The algorithm is the bisection method, implemented in Python. It takes 3 required arguments and 2 optional: 
+\begin{itemize}
+    \item $f$, the function one wishes to find a root of (required)
+    \item $a$, the lower bound of the interval to search for a root (required)
+    \item $b$, the upper bound of the interval to search for a root (required)
+    \item $\epsilon$, the desired precision (optional)
+    \item $n$, the number of iterations to run the method (optional)
+\end{itemize}
+Pseudo-code:
+\begin{lstlisting}
+    bisection(f, a, b, $\epsilon$, n) {
+        for i = 0 to n, do {
+            x = $\frac{a+b}{2}$
+            
+            if f(x) == 0 or $\frac{b-a}{2} < \epsilon$ then return x
+            
+            if sign(f(x)) == sign(f(a)) then a = x
+            
+            else if sign(f(x)) == sign(f(b)) then b = x
+            
+            else no root is found, return nothing
+        }
+    }
+\end{lstlisting}
+The algorithm takes in an interval $[a, b]$ to begin searching for a root and then begins iterating. It finds the midpoint, $x$, of $[a, b]$, and continuously narrows down the interval until it (1) finds the exact root (extremely unlikely) or an approximate root within the accepted error, $\epsilon$, or (2) the signs of both $f(a)$ and $f(b)$ aren't equal to $f(x)$, at which point no root can exist and the program terminates.
+ 
+\section{Results}
+\begin{spacing}{1.2}
+\begin{center}
+ \begin{tabular}{||c c c c||} 
+ \hline
+ $x_1$ & $\delta$ & $[x_1 - \delta, x_1 + \delta]$ & $x_0$ \\ [0.5ex] 
+ \hline\hline
+ -0.85 & 0.5 & [-0.9, -0.8] & -0.8242859529505948 \\ 
+ \hline
+ 1.26 & 0.06 & [1.2, 1.32] & 1.269196365417447 \\
+ \hline
+ 1.4 & 0.1 & [1.3, 1.5] & 1.4142931303766089 \\
+ \hline
+ 1.7 & 0.05 & [1.65, 1.75] & 1.6955940658750484 \\
+ \hline
+ 1.8 & 0.05 & [1.75, 1.85] & 1.8067232403147502 \\
+ \hline
+ 1.95 & 0.05 & [1.9, 2.0] & 1.948277988686459 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\end{spacing}
+\section{Brief comments on performance \& other questions}
+The bisection method uses a form of binary search to find roots, where the search space is halved every iteration. This results in a logarithmic running time, or a time complexity of $O(log(n))$, where $n$ is the number of iterations. Because the running time grows logarithmic with $n$, $n$ can be very large and the program will still be fast.
+% The running time of this bisection function is proportional to the number of iterations given as an argument, $N$. Therefore, we can say that the function has an asymptotically worse-case running time of $O(N)$, i.e. linear time. Considering the abilities of modern computers, this running time is very fast.
+
+\end{spacing}
+\end{document}
