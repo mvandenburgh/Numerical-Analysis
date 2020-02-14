@@ -24,22 +24,31 @@ def discEq(x, h, k, r):
 def heartEq(x):
     return quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2))
 
-incrementBy = 0.00001 # value to increment by when checking for intersection of disc and heart.
+incrementBy = 0.001 # value to increment by when checking for intersection of disc and heart.
 y=sqrt(2) # y-value of the top of the disc
 keepGoing = True # boolean flag to terminate while loop when radius/center are found
 # center =  0.381449999999999 # Use this to get closer
-center = y - incrementBy
-while(center > -sqrt(2) and keepGoing): # while the center of the disc is inside the heart
-    radius = y - center
-    current = 0 - radius
-    while (current < 0):
-        if (distance(current, heartEq(current)[1], current, discEq(current, 0, center, radius)[1]) < 0.0000001):
-            print("Approximated radius disc: " + str(radius))
-            print("Approximated center of disc (x, y): (0.0, " + str(center) + ")")
-            print("Program finished in " + str(time() - startTime) + " seconds.")
-            keepGoing = False
-            break
-        current += incrementBy
-    center -= incrementBy
+center = 1 # approximate guess
+for i in range(3):
+    keepGoing = True
+    while(center > -sqrt(2) and keepGoing): # while the center of the disc is inside the heart
+        radius = y - center
+        current = 0 - radius # x value
+        # print(radius, '(', i , ')')
+        while (current < 0):
+            # print("%f %d", radius, i)
+            if (distance(current, heartEq(current)[1], current, discEq(current, 0, center, radius)[1]) <= incrementBy):
+            # if (heartEq(current + incrementBy)[1] >= discEq(current + incrementBy, 0, center, radius)[1]):
+                print('\nIteration #', i+1)
+                print("Approximated radius disc: " + str(radius))
+                print("Approximated center of disc (x, y): (0.0, " + str(center) + ")")
+                keepGoing = False
+                break
+            current += incrementBy
+        center -= incrementBy
+    center += incrementBy * 10 # increase the approx center slightly to account for possible error
+    incrementBy /= 10
+    
 
+print("Program finished in " + str(time() - startTime) + " seconds.")
 print("Area of disc = " + str(pi * radius**2))
