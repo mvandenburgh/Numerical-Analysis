@@ -24,11 +24,11 @@ def discEq(x, h, k, r):
 def heartEq(x):
     return quadratic(1, -(2*sqrt(abs(x))), -(-abs(x)-(x)**2+2))
 
-incrementBy = 0.001 # value to increment by when checking for intersection of disc and heart.
+incrementBy = 0.001 # value to increment by when checking for intersection of disc and heart. Decrease to increase accuracy.
 y=sqrt(2) # y-value of the top of the disc
 keepGoing = True # boolean flag to terminate while loop when radius/center are found
 center = 1 # approximate guess
-iterations = 4 # increase to get more accurate results. Anything > 2 takes more than a second.
+iterations = 4 # increase to get more accurate results. 
 for i in range(iterations):
     keepGoing = True
     while(center > -sqrt(2) and keepGoing): # while the center of the disc is inside the heart

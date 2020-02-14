@@ -1,5 +1,10 @@
+####################################################################################
+# Approximates the roots of the function in problem 1.2 using the bisection method #
+####################################################################################
+
 from math import cos
 
+# Finds roots of functino f given interval a and b using the bisection method
 def bisection(f, a, b, epsilon=0.00000000001, n=10000000000):
     for i in range(n):
         x = (a + b) / 2
