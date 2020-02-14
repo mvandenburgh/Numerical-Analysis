@@ -27,18 +27,15 @@ def heartEq(x):
 incrementBy = 0.001 # value to increment by when checking for intersection of disc and heart.
 y=sqrt(2) # y-value of the top of the disc
 keepGoing = True # boolean flag to terminate while loop when radius/center are found
-# center =  0.381449999999999 # Use this to get closer
 center = 1 # approximate guess
-for i in range(3):
+iterations = 4 # increase to get more accurate results. Anything > 2 takes more than a second.
+for i in range(iterations):
     keepGoing = True
     while(center > -sqrt(2) and keepGoing): # while the center of the disc is inside the heart
         radius = y - center
         current = 0 - radius # x value
-        # print(radius, '(', i , ')')
         while (current < 0):
-            # print("%f %d", radius, i)
             if (distance(current, heartEq(current)[1], current, discEq(current, 0, center, radius)[1]) <= incrementBy):
-            # if (heartEq(current + incrementBy)[1] >= discEq(current + incrementBy, 0, center, radius)[1]):
                 print('\nIteration #', i+1)
                 print("Approximated radius disc: " + str(radius))
                 print("Approximated center of disc (x, y): (0.0, " + str(center) + ")")
@@ -50,5 +47,5 @@ for i in range(3):
     incrementBy /= 10
     
 
-print("Program finished in " + str(time() - startTime) + " seconds.")
-print("Area of disc = " + str(pi * radius**2))
+print("\nArea of disc = " + str(pi * radius**2))
+print("\nProgram finished in " + str(time() - startTime) + " seconds.")
