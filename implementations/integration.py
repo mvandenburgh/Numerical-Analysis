@@ -1,4 +1,4 @@
-def integrate(f, a, b, n=1000000):
+def simpson(f, a, b, n=1000000):
     """ Computes the definite integral of the function f from a to b using Simpson's Rule. 
     Optional argument n to provide number of subdivisions (default 10000).
     Exception handling present to handle slight round-off/truncation errors that cause the function to be undefined."""
