@@ -1,3 +1,5 @@
+from math import cos, pi
+
 def simpson(f, a, b, n=1000000):
     """ Computes the definite integral of the function f from a to b using Simpson's Rule. 
     Optional argument n to provide number of subdivisions (default 10000).
@@ -24,7 +26,7 @@ def simpson(f, a, b, n=1000000):
     sum += f(a + n * deltaX)
     return (deltaX / 3) * sum
 
+f = lambda theta: (1 - cos(4*theta))
 
-f = lambda y: -(y)**(5/2) + 4 * y**(3/2)
-
-print(2 * simpson(f, 0, 4, n=10000))
+print((1/4) * simpson(f, 0, 2 * pi))
+print(pi/2)
