@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define N 100
 
@@ -10,7 +11,9 @@ void printMatrix(double matrix[N][N]);
 void fillMatrix(double matrix[N][N]);
 double randomNumber();
 
+
 int main() {
+    srand( (unsigned) time(NULL) ); // use current time as seed for rng
     fillMatrix(matrix);
     printMatrix(matrix);
 }
