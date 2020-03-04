@@ -2,8 +2,15 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 5
+#define N 1024
 
+// N = 100, less than a second
+// N = 500, less than a second
+// N = 600, about 1 second
+// N = 700, about 1 second
+// N = 800, about 3 seconds
+// N = 900, about 4 seconds
+// N = 1024, about 14 seconds
 
 static double A[N][N];
 static double B[N][N];
@@ -16,15 +23,18 @@ double randomNumber();
 
 
 int main() {
+    time_t startTime = time(NULL);
     srand( (unsigned) time(NULL) ); // use current time as seed for rng
     fillMatrix(A);
     fillMatrix(B);
     naiveMatrixMultiply(A,B,C);
-    // printMatrix(A);
-    // printf("\n");
-    // printMatrix(B);
-    // printf("\n");
+    time_t runningTime = time(NULL) - startTime;
+    printMatrix(A);
+    printf("\n\n");
+    printMatrix(B);
+    printf("\n\n");
     printMatrix(C);
+    printf("\nRunning time of program: %lu seconds\n", runningTime);
 }
 
 
