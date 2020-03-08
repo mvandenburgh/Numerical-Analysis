@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define N 8
+#define N 16
 
 // N = 100, less than a second
 // N = 500, less than a second
@@ -49,15 +49,7 @@ int areEqualMatrices(int n, double m1[n][n], double m2[n][n]) {
 
 
 double** strassen(int n, double A[n][n], double B[n][n]) {
-    // printf("\n|--|\n");
-    // printf("%d\n\n", n);
-    // fflush(stdout);
-    // printMatrixNxN(n, A);
-    // printf("\n\n\n");
-    
     if (n <= 2) {
-        // printf("n = %d, n <= 2\n", n);
-        // fflush(stdout);
         double m1 = (A[0][0] + A[1][1]) * (B[0][0] + B[1][1]);
         double m2 = (A[1][0] + A[1][1]) *  B[0][0];
         double m3 = A[0][0] * (B[0][1] - B[1][1]);
@@ -71,6 +63,11 @@ double** strassen(int n, double A[n][n], double B[n][n]) {
         result[0][1] = m3 + m5;
         result[1][0] = m2 + m4;
         result[1][1] = m1 - m2 + m3 + m6;
+        // result[0][0] = A[0][0] * B[0][0] + A[0][1] * B[1][0];
+        // result[0][1] = A[0][0] * B[0][1] + A[0][1] * B[1][1];
+        // result[1][0] = A[1][0] * B[0][0] + A[1][1] * B[1][0];
+        // result[1][1] = A[1][0] * B[0][1] + A[1][1] * B[1][1];
+        
         return result;
     } 
     else {
@@ -100,17 +97,37 @@ double** strassen(int n, double A[n][n], double B[n][n]) {
 
         
         // printMatrix(A);
+
+        double (*temp1)[n];
+        double (*temp2)[n];
+
+        temp1 = matrixAddition(n/2, a11, a22);
+        temp2 = matrixAddition(n/2, b11, b22);
+        double (*d1)[n/2] = strassen(n/2, temp1, temp2);
+        free(temp1); free(temp2);
+        temp1 = matrixAddition(n/2, a21, a22);
+        double (*d2)[n/2] = strassen(n/2, temp1, b11);
+        free(temp1);
+        temp1 = matrixSubtraction(n/2, b12, b22);
+        double (*d3)[n/2] = strassen(n/2, a11, temp1);
+        free(temp1);
+        temp1 = matrixSubtraction(n/2, b21, b11);
+        double (*d4)[n/2] = strassen(n/2, a22, temp1);
+        free(temp1);
+        temp1 = matrixAddition(n/2, a11, a12);
+        double (*d5)[n/2] = strassen(n/2, temp1, b22);
+        free(temp1);
+        temp1 = matrixSubtraction(n/2, a21, a11);
+        temp2 = matrixAddition(n/2, b11, b12);
+        double (*d6)[n/2] = strassen(n/2, temp1, temp2);
+        free(temp1); free(temp2);
+        temp1 = matrixSubtraction(n/2, a12, a22);
+        temp2 = matrixAddition(n/2, b21, b22);
+        double (*d7)[n/2] = strassen(n/2, temp1, temp2);
+        free(a11); free(a22); free(a21); free(a12); free(b11); free(b22); free(b21); free(b12); free(temp1); free(temp2);
         
-        double (*d1)[2] = strassen(n/2, matrixAddition(n/2, a11, a22), matrixAddition(n/2, b11, b22));
-        double (*d2)[2] = strassen(n/2, matrixAddition(n/2, a21, a22), b11);
-        double (*d3)[2] = strassen(n/2, a11, matrixSubtraction(n/2, b12, b22));
-        double (*d4)[2] = strassen(n/2, a22, matrixSubtraction(n/2, b21, b11));
-        double (*d5)[2] = strassen(n/2, matrixAddition(n/2, a11, a12), b22);
-        double (*d6)[2] = strassen(n/2, matrixSubtraction(n/2, a21, a11), matrixAddition(n/2, b11, b12));
-        double (*d7)[2] = strassen(n/2, matrixSubtraction(n/2, a12, a22), matrixAddition(n/2, b21, b22));
-        free(a11); free(a22); free(a21); free(a12); free(b11); free(b22); free(b21); free(b12);
         
-        // double **result = (double *)malloc((n) * (n) * sizeof(double));
+        
         double (*result)[n] = malloc(sizeof(double[n][n]));
 
         for (int i = 0; i < n/2; i++) {
@@ -121,6 +138,7 @@ double** strassen(int n, double A[n][n], double B[n][n]) {
                 result[i+n/2][j+n/2] = d1[i][j] - d2[i][j] + d3[i][j] + d6[i][j];
             }
         }
+        free(d1); free(d2); free(d3); free(d4); free(d5); free(d6); free(d7);
         return result;
     }
 }
@@ -132,23 +150,26 @@ int main() {
 
     fillMatrix(A);
     fillMatrix(B);
-    // naiveMatrixMultiply(A,B,C);
-    double (*s)[N] = strassen(N, A, B);
+    
     naiveMatrixMultiply(A, B, C);
+    double (*s)[N] = strassen(N, A, B);
+
     time_t runningTime = time(NULL) - startTime;
 
-    // printMatrix(A); printf("\n\n"); printMatrix(B); printf("\n\n"); // printMatrix(C);
-    // printf("\n\n\n");
-    // printMatrixNxN(N, d);
+    printf("Naive:\n\n");
     printMatrixNxN(N, C);
+    
     printf("\n");
-    // printMatrixNxN(s, N);
+    
+    printf("Strassen:\n\n");
     printMatrixNxN(N, s);
-
-    if (areEqualMatrices(N, s, C)) printf("\nPASS: MATRICES ARE EQUAL.\n\n");
-    else printf("FAIL: MATRICES ARE NOT EQUAL.\n\n");
+    free(s);
+    
+    // if (areEqualMatrices(N, s, C)) printf("\nPASS: MATRICES ARE EQUAL.\n\n");
+    // else printf("FAIL: MATRICES ARE NOT EQUAL.\n\n");
 
     printf("\nRunning time of program: %lu seconds\n", runningTime);
+
 }
 
 
@@ -169,6 +190,7 @@ void fillMatrix(double matrix[N][N]) {
     }
 }
 
+// TODO: code my own pseudo rng
 double randomNumber() {
     double random_value;
 
@@ -188,6 +210,8 @@ void naiveMatrixMultiply(double A[N][N], double B[N][N], double C[N][N]) {
     }
 }
 
+
+//TODO: take in preallocated block of memory instead of malloc'ing inside function
 double** matrixAddition(int n, double A[n][n], double B[n][n]) {
     double (*result)[n] = malloc(sizeof(double[n][n]));
     for (int i = 0; i < n; i++) {
@@ -198,6 +222,7 @@ double** matrixAddition(int n, double A[n][n], double B[n][n]) {
     return result;
 }
 
+//TODO: take in preallocated block of memory instead of malloc'ing inside function
 double** matrixSubtraction(int n, double A[n][n], double B[n][n]) {
     double (*result)[n] = malloc(sizeof(double[n][n]));
     for (int i = 0; i < n; i++) {
