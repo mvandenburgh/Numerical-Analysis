@@ -16,35 +16,14 @@ static double A[N][N];
 static double B[N][N];
 static double C[N][N];
 
-static void printMatrix(double matrix[N][N]);
+static void printMatrixNxN(int n, double m[n][n]);
 static void fillMatrix(double matrix[N][N]);
+static int matrixCmp(int n, double m1[n][n], double m2[n][n]);
 static void naiveMatrixMultiply(double A[N][N], double B[N][N], double C[N][N]);
 static double** matrixAddition(int n, double A[n][n], double B[n][n]);
 static double** matrixSubtraction(int n, double A[n][n], double B[n][n]);
 static double** strassen(int n, double A[n][n], double B[n][n]);
 static double randomNumber();
-
-void printMatrixNxN(int n, double m[n][n]) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            printf("%f ", m[i][j]);
-            fflush(stdout);
-        }
-        printf("\n");
-    }
-}
-
-int areEqualMatrices(int n, double m1[n][n], double m2[n][n]) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            if (fabs(m1[i][j] - m2[i][j]) > 0.001) {
-                printf("\n%f != %f @ [%d][%d]: ", m1[i][j], m2[i][j], i, j);
-                return 0;
-            }
-        }
-    }
-    return 1;
-}
 
 
 int main() {
@@ -78,15 +57,6 @@ int main() {
     free(s);
 }
 
-
-void printMatrix(double matrix[N][N]) {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            printf("%f ", matrix[i][j]);
-        }
-        printf("\n");
-    }
-}
 
 void fillMatrix(double matrix[N][N]) {
     for (int i = 0; i < N; i++) {
@@ -219,4 +189,27 @@ double** strassen(int n, double A[n][n], double B[n][n]) {
         
         return c;
     }
+}
+
+
+void printMatrixNxN(int n, double m[n][n]) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            printf("%f ", m[i][j]);
+            fflush(stdout);
+        }
+        printf("\n");
+    }
+}
+
+int matrixCmp(int n, double m1[n][n], double m2[n][n]) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (fabs(m1[i][j] - m2[i][j]) > 0.001) {
+                printf("\n%f != %f @ [%d][%d]: ", m1[i][j], m2[i][j], i, j);
+                return 0;
+            }
+        }
+    }
+    return 1;
 }
