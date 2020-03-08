@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #define N 1024
 
@@ -187,7 +188,7 @@ double** strassen(int n, double A[n][n], double B[n][n]) {
         }
         free(m1); free(m2); free(m3); free(m4); free(m5); free(m6); free(m7);
         
-        return c;
+        return (double **)c;
     }
 }
 
