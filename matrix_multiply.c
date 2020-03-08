@@ -1,9 +1,15 @@
+/**
+ * C program that implements both the naive method and Strassen's method
+ * for matrix multiplication. Tested on gcc version 7.4.0.
+ * @author Michael VanDenburgh
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
 
-#define N 16 // dimensions of two randomly generated matrices
+#define N 1024 // dimensions of two randomly generated matrices
 #define PRINT 1 // set to 0 to disable printing out the matrices
 #define NAIVE 1 // set to 0 to disable naive method
 #define STRASSEN 1 // set to 0 to disable strassen method
@@ -132,7 +138,6 @@ void naiveMatrixMultiply(double A[N][N], double B[N][N], double C[N][N]) {
 
 double** strassen(int n, double A[n][n], double B[n][n]) {
     if (n <= 2) {
-        
         double (*result)[2] = malloc(sizeof(double[2][2]));
         result[0][0] = A[0][0] * B[0][0] + A[0][1] * B[1][0];
         result[0][1] = A[0][0] * B[0][1] + A[0][1] * B[1][1];
