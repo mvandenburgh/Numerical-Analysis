@@ -3,7 +3,10 @@
 #include <time.h>
 #include <math.h>
 
-#define N 1024
+#define N 1024 // dimensions of two randomly generated matrices
+#define PRINT 1 // set to 0 to disable printing out the matrices
+#define NAIVE 1 // set to 0 to disable naive method
+#define STRASSEN 1 // set to 0 to disable strassen method
 
 // N = 100, less than a second
 // N = 500, less than a second
@@ -13,9 +16,6 @@
 // N = 900, about 4 seconds
 // N = 1024, about 14 seconds
 
-static double A[N][N];
-static double B[N][N];
-static double C[N][N];
 
 static void printMatrixNxN(int n, double m[n][n]);
 static void fillMatrix(double matrix[N][N]);
@@ -26,6 +26,10 @@ static double** matrixSubtraction(int n, double A[n][n], double B[n][n]);
 static double** strassen(int n, double A[n][n], double B[n][n]);
 static double randomNumber();
 
+static double A[N][N];
+static double B[N][N];
+static double C[N][N];
+
 
 int main() {
     time_t startTime;
@@ -33,30 +37,36 @@ int main() {
 
     srand( (unsigned) time(NULL) ); // use current time as seed for rng
 
+
     fillMatrix(A);
     fillMatrix(B);
-
-    printf("Naive:\n\n");
+    #if NAIVE
+    printf("Naive:\n");
     startTime = time(NULL);
     naiveMatrixMultiply(A, B, C);
     runningTime = time(NULL) - startTime;
-    // printMatrixNxN(N, C);
+    #if PRINT
+    printMatrixNxN(N, C);
+    #endif
     printf("\nRunning time of naive method: %lu seconds\n", runningTime);
+    #endif
     
-    
-    printf("Strassen:\n\n");
+    #if STRASSEN
+    printf("\nStrassen:\n\n");
     startTime = time(NULL);
     double (*s)[N] = strassen(N, A, B);
     runningTime = time(NULL) - startTime;
-    // printMatrixNxN(N, s);
+    #if PRINT
+    printMatrixNxN(N, s);
+    #endif
     printf("\nRunning time of Strassen method: %lu seconds\n", runningTime);
-
-
-    if (matrixCmp(N, s, C)) printf("\nPASS: MATRICES ARE EQUAL.\n\n");
-    else printf("FAIL: MATRICES ARE NOT EQUAL.\n\n");
-
     free(s);
+    #endif
+
+    // if (matrixCmp(N, s, C)) printf("\nPASS: MATRICES ARE EQUAL.\n\n");
+    // else printf("FAIL: MATRICES ARE NOT EQUAL.\n\n");
 }
+
 
 
 void fillMatrix(double matrix[N][N]) {
