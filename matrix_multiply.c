@@ -51,7 +51,7 @@ int main() {
     printf("\nRunning time of Strassen method: %lu seconds\n", runningTime);
 
 
-    if (areEqualMatrices(N, s, C)) printf("\nPASS: MATRICES ARE EQUAL.\n\n");
+    if (matrixCmp(N, s, C)) printf("\nPASS: MATRICES ARE EQUAL.\n\n");
     else printf("FAIL: MATRICES ARE NOT EQUAL.\n\n");
 
     free(s);
