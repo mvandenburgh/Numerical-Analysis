@@ -40,26 +40,35 @@ int main() {
 
     fillMatrix(A);
     fillMatrix(B);
+    #if PRINT
+    printf("Generated matrix A:");
+    printMatrixNxN(N, A);
+    printf("\n\nGenerated matrix B:");
+    printMatrixNxN(N, B);
+    #endif
+
     #if NAIVE
-    printf("Naive:\n");
+    printf("\nRunning naive method...");
     startTime = time(NULL);
     naiveMatrixMultiply(A, B, C);
     runningTime = time(NULL) - startTime;
     #if PRINT
+    printf("\nResult:");
     printMatrixNxN(N, C);
     #endif
-    printf("\nRunning time of naive method: %lu seconds\n", runningTime);
+    printf("Running time of naive method: %lu seconds\n\n", runningTime);
     #endif
     
     #if STRASSEN
-    printf("\nStrassen:\n\n");
+    printf("\nRunning Strassen's method...");
     startTime = time(NULL);
     double (*s)[N] = strassen(N, A, B);
     runningTime = time(NULL) - startTime;
     #if PRINT
+    printf("\nResult:");
     printMatrixNxN(N, s);
     #endif
-    printf("\nRunning time of Strassen method: %lu seconds\n", runningTime);
+    printf("Running time of Strassen method: %lu seconds\n\n", runningTime);
     free(s);
     #endif
 
@@ -204,6 +213,7 @@ double** strassen(int n, double A[n][n], double B[n][n]) {
 
 
 void printMatrixNxN(int n, double m[n][n]) {
+    printf("\n---------------------------------------------------------------------------------\n");
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
             printf("%f ", m[i][j]);
@@ -211,6 +221,7 @@ void printMatrixNxN(int n, double m[n][n]) {
         }
         printf("\n");
     }
+    printf("---------------------------------------------------------------------------------\n\n");
 }
 
 int matrixCmp(int n, double m1[n][n], double m2[n][n]) {
