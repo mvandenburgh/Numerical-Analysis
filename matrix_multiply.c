@@ -3,7 +3,7 @@
 #include <time.h>
 #include <math.h>
 
-#define N 1024 // dimensions of two randomly generated matrices
+#define N 16 // dimensions of two randomly generated matrices
 #define PRINT 1 // set to 0 to disable printing out the matrices
 #define NAIVE 1 // set to 0 to disable naive method
 #define STRASSEN 1 // set to 0 to disable strassen method
@@ -221,7 +221,7 @@ void printMatrixNxN(int n, double m[n][n]) {
         }
         printf("\n");
     }
-    printf("---------------------------------------------------------------------------------\n\n");
+    printf("---------------------------------------------------------------------------------\n");
 }
 
 int matrixCmp(int n, double m1[n][n], double m2[n][n]) {
