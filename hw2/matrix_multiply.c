@@ -9,9 +9,9 @@
 #include <time.h>
 #include <math.h>
 
-#define N 1024 // dimensions of two randomly generated matrices
+#define N 4096 // dimensions of two randomly generated matrices
 #define PRINT 1 // set to 0 to disable printing out the matrices
-#define NAIVE 1 // set to 0 to disable naive method
+#define NAIVE 0 // set to 0 to disable naive method
 #define STRASSEN 1 // set to 0 to disable strassen method
 
 // N = 100, less than a second
@@ -22,6 +22,8 @@
 // N = 900, about 4 seconds
 // N = 1024, about 14 seconds
 
+
+// Strassen N = 4096, 372 seconds
 
 static void printMatrixNxN(int n, double m[n][n]);
 static void fillMatrix(double matrix[N][N]);
@@ -37,7 +39,7 @@ static double B[N][N];
 static double C[N][N];
 
 
-int main() {
+int main(void) {
     time_t startTime;
     time_t runningTime;
 
@@ -48,9 +50,9 @@ int main() {
     fillMatrix(B);
     #if PRINT
     printf("Generated matrix A:");
-    printMatrixNxN(N, A);
+    // printMatrixNxN(N, A);
     printf("\n\nGenerated matrix B:");
-    printMatrixNxN(N, B);
+    // printMatrixNxN(N, B);
     #endif
 
     #if NAIVE
@@ -58,10 +60,10 @@ int main() {
     startTime = time(NULL);
     naiveMatrixMultiply(A, B, C);
     runningTime = time(NULL) - startTime;
-    #if PRINT
+    // #if PRINT
     printf("\nResult:");
     printMatrixNxN(N, C);
-    #endif
+    // #endif
     printf("Running time of naive method: %lu seconds\n\n", runningTime);
     #endif
     
@@ -70,10 +72,10 @@ int main() {
     startTime = time(NULL);
     double (*s)[N] = strassen(N, A, B);
     runningTime = time(NULL) - startTime;
-    #if PRINT
+    // #if PRINT
     printf("\nResult:");
     printMatrixNxN(N, s);
-    #endif
+    // #endif
     printf("Running time of Strassen method: %lu seconds\n\n", runningTime);
     free(s);
     #endif
