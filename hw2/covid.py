@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
-from numpy import sin, cos, sqrt, log, pi
-from scipy.interpolate import lagrange
+import numpy as np
+from numpy import sin, cos, sqrt, log, pi, exp, polyfit
+from scipy.interpolate import lagrange, interp1d
 from scipy.optimize import curve_fit
 from math import fmod, ceil
 from random import random
@@ -36,6 +37,9 @@ def box_muller_transform(mu, sigma):
     return z1, z2
 
 
+
+
+
 x = []
 y = [10] # 10 infected patients on day 1
 
@@ -47,11 +51,14 @@ for i in range(0, 45):
 # calculate number of infected patients on each day
 for i in range(0, 44):
     y.append(ceil(y[i] * (1 + x[i]))) # round up number of infected people to an integer
+    print("Day " + str(i+2) + " & " + str(ceil(y[i] * (1 + x[i]))) + " \\\\ \\hline", sep='')
 
 
-# plot number of infected patients in first 45 days
-plt.plot(range(0, 45), y) 
+# graph number of infected patients in first 45 days
+plt.scatter(range(0, 45), y) 
 plt.title(label="COVID-19 Infections for First 45 Days")
+plt.xlabel("Days")
+plt.ylabel("Infected patients")
 plt.show()
 
 
@@ -63,34 +70,90 @@ for i in range(0, 45):
 # calculate number of infected patients on each day
 for i in range(0, 45):
     y.append(ceil(y[i+44] * (1 + x[i+44])))
+    print("Day " + str(i+46) + " & " + str(ceil(y[i+44] * (1 + x[i+44]))) + " \\\\ \\hline", sep='')
 
 
-# plot number of infected patients in second 45 days
-plt.plot(range(0, 45), y[45:])
+# graph number of infected patients in second 45 days
+plt.scatter(range(45, 90), y[45:])
 plt.title(label="COVID-19 Infections for Second 45 Days")
+plt.xlabel("Days")
+plt.ylabel("Infected patients")
 plt.show()
 
-plt.plot(range(0, 90), y)
+
+plt.scatter(range(0, 90), y)
 plt.title(label="COVID-19 Infections for First 90 Days")
+plt.xlabel("Days")
+plt.ylabel("Infected patients")
+plt.legend()
 plt.show()
 
-poly = lagrange([x[9], x[18], x[27], x[36], x[45]], [y[9],y[18],y[27],y[36],y[45]]).c
-# poly = lagrange([x[1], x[9], x[18], x[27], x[36], x[45]], [y[1], y[9], y[18], y[27], y[36], y[45]]).c
+# calculate coefficients for polynomial
+A = [
+    [9**4, 9**3, 9**2, 9**1, 9**0],
+    [18**4, 18**3, 18**2, 18**1, 18**0],
+    [27**4, 27**3, 27**2, 27**1, 27**0],
+    [36**4, 36**3, 36**2, 36**1, 36**0],
+    [45**4, 45**3, 45**2, 45**1, 45**0]
+]
+
+B = [y[9], y[18], y[27], y[36], y[45]]
+
+poly = np.linalg.inv(A).dot(B) # coefficients of polynomial
+
 
 y_interpolated = []
-
 for i in range(1, 46):
-    current_point = 0
-    for j in range(0, len(poly)):
-        current_point += (i**(len(poly)-j)) * poly[j]
+    current_point = i**4 * poly[0] + i**3 * poly[1] + i**2 * poly[2] + i**1 * poly[3] + i**0 * poly[4]
+    print("Day " + str(i) + " & " + str(current_point), sep='')
     y_interpolated.append(current_point)
 
-
-plt.plot(range(0,45), y_interpolated)
+print(poly)
+# plot interpolated curve and original
+plt.plot(range(0, 45), y_interpolated, label="interpolated", color='r')
+plt.scatter(range(0, 45), y[:45], label="original")
 plt.title("COVID-19 Infections for First 45 Days (Interpolated from " + str(len(poly)) + " points)")
+plt.xlabel("Days")
+plt.ylabel("Infected patients")
+plt.legend()
 plt.show()
 
-# curve_fit(tck, xdata=x_points, ydata=y_points)
+x_data = x[45:]
+y_data = y[45:]
+
+y_data_fitted = []
+
+p0 = (4, 0.1)
+
+curve_fit_function = lambda t, a, b: a * exp(b * t)
+
+params = curve_fit(f=curve_fit_function, xdata=x[45:], ydata=y[45:], p0=p0)[0]
+
+for i in range(0, 45):
+    y_data_fitted.append(curve_fit_function(x_data[i], params[0], params[1]))
+    print("Day " + str(i+46) + " & " + str(curve_fit_function(x_data[i], params[0], params[1])) + " \\\\ \\hline", sep='')
+
+print("alpha= " + str(params[0]) + "\nBeta= " + str(params[1]))
+plt.plot(range(45, 90), y_data_fitted)
+# plt.scatter(range(45,90), y[45:])
+plt.title("COVID-19 Infections for Second 45 Days (Curve Fitting)")
+plt.xlabel("Days")
+plt.yscale("symlog")
+plt.ylabel("Infected patients")
+plt.show()
+
+
+plt.title("All results")
+plt.scatter(range(0, 45), y[:45], label="First 45 Days", color="r")
+plt.scatter(range(45, 90), y[45:], label="Second 45 Days", color="g")
+plt.plot(range(0, 45), y_interpolated, label="Interpolation", color='k')
+plt.plot(range(45, 90), y_data_fitted, label="Curve Fitting", color="b")
+plt.xlabel("Days")
+plt.ylabel("Infected patients")
+plt.legend()
+plt.show()
+
+
 
 def show_uniform_distribution(n):
     dist = []

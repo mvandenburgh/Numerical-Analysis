@@ -11,7 +11,7 @@
 
 #define N 4096 // dimensions of two randomly generated matrices
 #define PRINT 1 // set to 0 to disable printing out the matrices
-#define NAIVE 0 // set to 0 to disable naive method
+#define NAIVE 1 // set to 0 to disable naive method
 #define STRASSEN 1 // set to 0 to disable strassen method
 
 // N = 100, less than a second
@@ -50,9 +50,9 @@ int main(void) {
     fillMatrix(B);
     #if PRINT
     printf("Generated matrix A:");
-    // printMatrixNxN(N, A);
+    printMatrixNxN(N, A);
     printf("\n\nGenerated matrix B:");
-    // printMatrixNxN(N, B);
+    printMatrixNxN(N, B);
     #endif
 
     #if NAIVE
