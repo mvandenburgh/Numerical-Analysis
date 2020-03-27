@@ -105,7 +105,7 @@ poly = np.linalg.inv(A).dot(B) # coefficients of polynomial
 y_interpolated = []
 for i in range(1, 46):
     current_point = i**4 * poly[0] + i**3 * poly[1] + i**2 * poly[2] + i**1 * poly[3] + i**0 * poly[4]
-    print("Day " + str(i) + " & " + str(current_point), sep='')
+    print("Day " + str(i) + " & " + str(current_point) +" \\\\ \\hline", sep='')
     y_interpolated.append(current_point)
 
 print(poly)
