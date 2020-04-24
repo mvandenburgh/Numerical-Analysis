@@ -1,5 +1,5 @@
 /**
- * C program that implements both the naive method and Strassen's method
+ * C program that implements the naive method and Strassen's method
  * for matrix multiplication. Tested on gcc version 7.4.0.
  * @author Michael VanDenburgh
  */
@@ -9,21 +9,11 @@
 #include <time.h>
 #include <math.h>
 
-#define N 4096 // dimensions of two randomly generated matrices
+#define N 1024 // dimensions of two randomly generated matrices
 #define PRINT 1 // set to 0 to disable printing out the matrices
 #define NAIVE 1 // set to 0 to disable naive method
 #define STRASSEN 1 // set to 0 to disable strassen method
 
-// N = 100, less than a second
-// N = 500, less than a second
-// N = 600, about 1 second
-// N = 700, about 1 second
-// N = 800, about 3 seconds
-// N = 900, about 4 seconds
-// N = 1024, about 14 seconds
-
-
-// Strassen N = 4096, 372 seconds
 
 static void printMatrixNxN(int n, double m[n][n]);
 static void fillMatrix(double matrix[N][N]);
@@ -60,10 +50,10 @@ int main(void) {
     startTime = time(NULL);
     naiveMatrixMultiply(A, B, C);
     runningTime = time(NULL) - startTime;
-    // #if PRINT
+    #if PRINT
     printf("\nResult:");
     printMatrixNxN(N, C);
-    // #endif
+    #endif
     printf("Running time of naive method: %lu seconds\n\n", runningTime);
     #endif
     
@@ -72,16 +62,18 @@ int main(void) {
     startTime = time(NULL);
     double (*s)[N] = strassen(N, A, B);
     runningTime = time(NULL) - startTime;
-    // #if PRINT
+    #if PRINT
     printf("\nResult:");
     printMatrixNxN(N, s);
-    // #endif
-    printf("Running time of Strassen method: %lu seconds\n\n", runningTime);
-    free(s);
     #endif
+    printf("Running time of Strassen method: %lu seconds\n\n", runningTime);
+    #endif
+
 
     // if (matrixCmp(N, s, C)) printf("\nPASS: MATRICES ARE EQUAL.\n\n");
     // else printf("FAIL: MATRICES ARE NOT EQUAL.\n\n");
+
+    free(s);
 }
 
 
@@ -94,7 +86,6 @@ void fillMatrix(double matrix[N][N]) {
     }
 }
 
-// TODO: code my own pseudo rng
 double randomNumber() {
     double random_value;
 
@@ -104,7 +95,7 @@ double randomNumber() {
 }
 
 
-//TODO: take in preallocated block of memory instead of malloc'ing inside function
+
 double** matrixAddition(int n, double A[n][n], double B[n][n]) {
     double (*result)[n] = malloc(sizeof(double[n][n]));
     for (int i = 0; i < n; i++) {
@@ -115,7 +106,7 @@ double** matrixAddition(int n, double A[n][n], double B[n][n]) {
     return result;
 }
 
-//TODO: take in preallocated block of memory instead of malloc'ing inside function
+
 double** matrixSubtraction(int n, double A[n][n], double B[n][n]) {
     double (*result)[n] = malloc(sizeof(double[n][n]));
     for (int i = 0; i < n; i++) {
