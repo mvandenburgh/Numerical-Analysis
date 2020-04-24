@@ -6,7 +6,7 @@
 
 #define D 0.75 // diameter of disc
 #define W 1 // distance between parallel lines
-#define SAMPLES 1400 // number of discs to drop
+#define SAMPLES 1000 // number of discs to drop
 
 #define GRAPH // define GRAPH to display graph of data
 
@@ -38,31 +38,6 @@ int toss_disk(void) {
         return 0;
 }
 
-
-double avg(int upto) {
-    int sum = 0;
-    for (int i = 0; i < upto; i++) {
-        sum += observations[i];
-    }
-    return (float)sum / upto;
-}
-
-void printObs(void) {
-    for (int i = 0; i < SAMPLES; i++) {
-        printf("%d ", observations[i]);
-    }
-}
-
-void printProbs(void) {
-    for (int i = 0; i < SAMPLES; i++) {
-        printf("%f ", probabilities[i]);
-        if (i % 20 == 0) printf("\n");
-    }
-}
-
-
-//rand() % (max_number + 1 - minimum_number) + minimum_number
-
 int main(void) {
     srand(time(NULL));
     probabilities[0] = 0;
@@ -74,8 +49,7 @@ int main(void) {
         sum += observations[i];
         probabilities[i] = (float)sum / i;
     }
-    // printProbs();
-    // printObs();
+
     #ifdef GRAPH
     if (SAMPLES > 10000) exit(1);
     char * commands[] = {"set title \"Disc Toss Probabilities\"", "plot 'data.temp' with points"};
