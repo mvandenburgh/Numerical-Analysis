@@ -6,7 +6,9 @@
 
 #define D 0.75 // diameter of disc
 #define W 1 // distance between parallel lines
-#define SAMPLES 100000000 // number of discs to drop
+#define SAMPLES 1400 // number of discs to drop
+
+#define GRAPH // define GRAPH to display graph of data
 
 int observations[SAMPLES];
 double probabilities[SAMPLES];
@@ -64,14 +66,18 @@ void printProbs(void) {
 int main(void) {
     srand(time(NULL));
     probabilities[0] = 0;
-    for (int i = 0; i < SAMPLES; i++) {
+    int sum = 0;
+    for (int i = 1; i < SAMPLES; i++) {
+        if (i % 10000000 == 0) printf("%d\n", i);
         x[i] = i;
         observations[i] =  toss_disk();
-        probabilities[i] = avg(i);
+        sum += observations[i];
+        probabilities[i] = (float)sum / i;
     }
     // printProbs();
     // printObs();
-
+    #ifdef GRAPH
+    if (SAMPLES > 10000) exit(1);
     char * commands[] = {"set title \"Disc Toss Probabilities\"", "plot 'data.temp' with points"};
     FILE * temp = fopen("data.temp", "w");
     FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");
@@ -83,4 +89,5 @@ int main(void) {
     for (int i=0; i < 2; i++) {
         fprintf(gnuplotPipe, "%s \n", commands[i]); //Send commands to gnuplot one by one.
     }
+    #endif
 }
