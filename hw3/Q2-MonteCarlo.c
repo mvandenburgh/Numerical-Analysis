@@ -26,7 +26,7 @@ static double seed1;
 void init_seeds(void) {
     seed0 = 0.15924135;
     seed1 = (double)time(NULL);
-    while (seed1 >=1 ) seed1 /= 10.0; // shift right a decimal place until > 1
+    while (seed1 >= 1) seed1 /= 10.0; // shift right a decimal place until > 1
 }
 
 /**
