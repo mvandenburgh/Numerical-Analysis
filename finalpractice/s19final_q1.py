@@ -1,16 +1,35 @@
-import numpy as np
-import matplotlib.pyplot as plt
+from time import time
+from math import fmod, sqrt, log, sin, cos, pi
 from copy import deepcopy
-import scipy.optimize
 
-n = 5
-a = [
-    [1,2,3,4,5],
-    [6,7,8,9,0],
-    [1,2,3,4,5],
-    [6,7,8,9,0],
-    [9,8,7,6,5]
-]
+import matplotlib.pyplot as plt
+
+seed0 = 0.775205 # first seed for pseudo-RNG
+seed1 = ((time() % 60) % 1) # base second seed on current millisecond
+
+
+def rng(a,b):
+    """ Generate a random number drawn from a uniform distribution between a and b """
+    global seed0, seed1
+    temp = seed0
+    seed0 = seed1
+    if seed1 + temp > 1.0:
+        seed1 = fmod((seed1 + temp) - 1.0, 1.0)  
+    else:
+        seed1 = fmod((seed1 + temp), 1.0)
+    return a + (seed1 * (b-a))
+
+def box_muller_transform(mu, sigma):
+    """ Generate a random number drawn from a normal distribution with mean mu and variance sigma. """
+    x1 = rng(0,1)
+    x2 = rng(0,1)
+
+    g1 = sqrt(-2 * log(x1)) * cos(2 * pi * x2)
+    g2 = sqrt(-2 * log(x1)) * sin(2 * pi * x2)
+
+    z1 = mu + g1 * sigma
+    z2 = mu + g2 * sigma
+    return z1
 
 # Finds roots of functino f given interval a and b using the bisection method
 def bisection(f, a, b, epsilon=0.00000000001, n=10000000000):
@@ -50,8 +69,14 @@ def determinant_helper(matrix, mul):
 def determinant(matrix):
     return determinant_helper(matrix, 1)
 
+n = 32
+
+matrix = [[box_muller_transform(0, 1) for i in range(n)] for i in range(n)]
+
+
 def char_poly(lam):
-    mat = deepcopy(a)
+    global matrix, n
+    mat = deepcopy(matrix)
     for i in range(n):
         mat[i][i] -= lam
     return determinant(mat)
@@ -68,9 +93,4 @@ def graph_function(f, a, b, h=0.001):
     plt.show()
 
 
-graph_function(char_poly, 0, 5)
-
-print(bisection(char_poly, -4, -3))
-print(bisection(char_poly, -1, 1))
-print(bisection(char_poly, 4, 6))
-print(bisection(char_poly, 22, 26))
+graph_function(char_poly, -10, -9, 0.1)
