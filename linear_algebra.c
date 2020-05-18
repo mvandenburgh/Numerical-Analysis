@@ -247,56 +247,127 @@ double** inverse(double** matrix, int n) {
     return inverse;
 }
 
-int det(double **ptr, int n){
-	if (n == 1) return **ptr;
+int det(double** matrix, int n) {
+	if (n == 1) 
+        return **matrix;
 	else {
-		int i,j,k,m;
 		int sign = 1;
-		double ans = 0;
+		double ret = 0;
 		double **sub;
-		for (i = 0; i < n; i++){
+		for (int i = 0; i < n; i++) {
 			sub = malloc(sizeof(double *)*(n-1));
-			for (j = 0; j < n-1; j++) sub[j] = malloc(sizeof(double)*(n-1));
-			
-			m = 0;
-			for (j = 0; j < n; j++){
-				if (j != i){
-					for (k = 0; k < n-1; k++) sub[m][k] = ptr[j][k+1];
+			for (int j = 0; j < n-1; j++) {
+                sub[j] = malloc(sizeof(double)*(n-1));
+            }
+			int m = 0;
+			for (int j = 0; j < n; j++) {
+				if (j != i) {
+					for (int k = 0; k < n-1; k++) {
+                        sub[m][k] = matrix[j][k+1];
+                    }
 					m++;
 				}
 			}
-			ans += ptr[i][0]*det(sub, n-1)*sign;
+			ret += matrix[i][0]*det(sub, n-1)*sign;
 			sign = -sign;
 			free(sub);
 		}
-		return ans;
+		return ret;
 	}
 }
 
+double bisection(double (*f)(double), double a, double b, double epsilon, long int n) {
+    for (int i = 0; i < n; i++) {
+        double x = (a + b) / 2;
+        if (f(x) == 0 || (b-a) / 2 < epsilon)
+            return x;
+        
+        if (f(x) * f(a) > 0)
+            a = x;
+        else if (f(x) * f(b) > 0)
+            b = x;
+        else {
+            fprintf(stderr, "Bisection method failed....");
+            return -1;
+        }
+    }
+}
+
+
 #define N 5 // size of matrix
+double** matrix;
+
+double characteristic_polynomial(double lambda) {
+    double** temp_mat = calloc(N, sizeof(double*));
+    for (int i = 0; i < N; i++) {
+        temp_mat[i] = calloc(N, sizeof(double));
+        for (int j = 0; j < N; j++) {
+            temp_mat[i][j] = matrix[i][j];
+            if (i==j)
+                temp_mat[i][j] -= lambda;
+        }
+    }
+    double deter = det(matrix, N);
+    free_matrix(temp_mat, N);
+    return deter;
+}
+
+void graph_function(double (*f)(double), double a, double b, double h) {
+    if (abs(b-a) / h > 10000) {
+        fprintf(stderr, "Too large of a data set to graph.\n");
+        return;
+    }
+    char * commands[] = {"set title \"Disc Toss Probabilities\"", "plot 'data.temp' with line"};
+    FILE * temp = fopen("data.temp", "w");
+    FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");
+    if (a > b) {
+        int temp = a;
+        a = b;
+        b = temp;
+    }
+    double x = a;
+    while (x < b) {
+        fprintf(temp, "%lf %lf \n", x, f(x));
+        x += h;
+    }
+    for (int i=0; i < 2; i++) {
+        fprintf(gnuplotPipe, "%s \n", commands[i]); //Send commands to gnuplot one by one.
+    }
+}
 
 int main() {
+    // def char_poly(lam):
+//     mat = deepcopy(a)
+//     for i in range(n):
+//         mat[i][i] -= lam
+//     return determinant(mat)
+    
     int rows = N;
     int cols = N;
-    double** matrix = calloc(rows, sizeof(double*));
+    matrix = calloc(rows, sizeof(double*));
     fillMatrix(matrix, rows, cols);
-    double d = det(matrix, N);
-    printf("%f\n", d);
+    // double d = det(matrix, N);
 
-    double*** lu_decomposition = lu_decomp(matrix, rows);
-    double** lower = lu_decomposition[0];
-    double** upper = lu_decomposition[1];
-    double** inverted = inverse(matrix, rows);
+    // printf("%f\n", d);
 
+    // double*** lu_decomposition = lu_decomp(matrix, rows);
+    // double** lower = lu_decomposition[0];
+    // double** upper = lu_decomposition[1];
+    // double** inverted = inverse(matrix, rows);
 
     print_matrix(matrix, rows, cols);
     printf("\n");
-    print_matrix(inverted, rows, cols);
+    // print_matrix(inverted, rows, cols);
+
+    double root1 = bisection(characteristic_polynomial, -4, -1, 0.000001, 100000000);
+    double root2 = bisection(characteristic_polynomial, 1, 2, 0.000001, 100000000);
+
+    printf("roots:\n%f\n%f\n", root1, root2);
 
     // free allocated resources
     free_matrix(matrix, rows);
-    free_matrix(inverted, rows);
-    free_matrix(lower, rows);
-    free_matrix(upper, rows);
-    free(lu_decomposition);
+    // free_matrix(inverted, rows);
+    // free_matrix(lower, rows);
+    // free_matrix(upper, rows);
+    // free(lu_decomposition);
 }
