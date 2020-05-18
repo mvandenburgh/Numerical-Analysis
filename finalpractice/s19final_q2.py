@@ -22,7 +22,7 @@ def integrate(f, a, b, n=1000000):
             except:
                 pass
         elif i % 2 == 1:
-            try: 
+            try:
                 sum += (4 * f(x))
             except:
                 pass
@@ -46,7 +46,7 @@ b = 2 * pi
 area = integrate(lambda theta: (1/2) * r(theta)**2, a, b)
 print(area)
 
-N = 1000000 # number of points to generate for MC simulation
+N = 10000000 # number of points to generate for MC simulation
 
 sum = sum([(1/2) * (r(random.uniform(a, b)))**2 for i in range(N)])
 
