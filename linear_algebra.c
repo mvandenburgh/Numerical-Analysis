@@ -29,16 +29,16 @@
 // }
 
 
-// void naiveMatrixMultiply(int N, double** A, double** B, double** C) {
-//     for (int i = 0; i < N; i++) {
-//         for (int j = 0; j < N; j++) {
-//             C[i][j] = 0.0;
-//             for (int k = 0; k < N; k++) {
-//                 C[i][j] = C[i][j] + A[i][k] * B[k][j];
-//             }
-//         }
-//     }
-// }
+void naiveMatrixMultiply(int N, double** A, double** B, double** C) {
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            C[i][j] = 0.0;
+            for (int k = 0; k < N; k++) {
+                C[i][j] = C[i][j] + A[i][k] * B[k][j];
+            }
+        }
+    }
+}
 
 // double** strassen(int n, double** A, double** B) {
 //     if (n <= 2) {
@@ -294,58 +294,131 @@ double bisection(double (*f)(double), double a, double b, double epsilon, long i
 }
 
 
-#define N 5 // size of matrix
+
 double** matrix;
 
-double characteristic_polynomial(double lambda) {
-    double** temp_mat = calloc(N, sizeof(double*));
-    for (int i = 0; i < N; i++) {
-        temp_mat[i] = calloc(N, sizeof(double));
-        for (int j = 0; j < N; j++) {
-            temp_mat[i][j] = matrix[i][j];
-            if (i==j)
-                temp_mat[i][j] -= lambda;
+
+static const float convergence_threshold = 0.0000001f;
+
+double** init_matrix(int n) {
+    double** matrix = calloc(n, sizeof(double*));
+    for (int i = 0; i < n; i++)
+        matrix[i] = calloc(n, sizeof(double));
+    return matrix;
+}
+
+void copy_matrix(double** dest, double** src, int n) {
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            dest[i][j] = src[i][j];
         }
     }
-    double deter = det(matrix, N);
-    free_matrix(temp_mat, N);
-    return deter;
 }
 
-void graph_function(double (*f)(double), double a, double b, double h) {
-    if (abs(b-a) / h > 10000) {
-        fprintf(stderr, "Too large of a data set to graph.\n");
-        return;
-    }
-    char * commands[] = {"set title \"Disc Toss Probabilities\"", "plot 'data.temp' with line"};
-    FILE * temp = fopen("data.temp", "w");
-    FILE * gnuplotPipe = popen ("gnuplot -persistent", "w");
-    if (a > b) {
-        int temp = a;
-        a = b;
-        b = temp;
-    }
-    double x = a;
-    while (x < b) {
-        fprintf(temp, "%lf %lf \n", x, f(x));
-        x += h;
-    }
-    for (int i=0; i < 2; i++) {
-        fprintf(gnuplotPipe, "%s \n", commands[i]); //Send commands to gnuplot one by one.
+void
+qr_decomposition(double** u, int n, double** q, double** r)
+{
+    long unsigned int i, j, k, ii;
+
+    for (i = 0; i < n; i++) {
+        // q_i = u_i
+        for (j = 0; j < n; j++) {
+            q[j][i] = u[j][i];
+        }
+
+        for (j = 0; j < i; j++) {
+        // r[j,i] = q_j^T * u_i 
+            double dot = 0;
+            for (k = 0; k < n; k++) {
+                dot += q[k][j] * u[k][i];
+            }
+            r[j][i] = dot;
+
+            // q_i = q_i - r[j,i] q_j
+            for (k = 0; k < n; k++) {
+                q[k][i] = q[k][i] - r[j][i] * q[k][j];
+            }
+        }
+
+        // r[i,i] = |q_i|
+        double l2_norm = 0;
+        for (j = 0; j < n; j++)
+            l2_norm += q[j][i] * q[j][i];
+        r[i][i] = sqrtf(l2_norm);
+
+        // q_i = q_i / r[i,i]
+        for (j = 0; j < n; j++) 
+            q[j][i] = (1 / r[i][i]) * q[j][i];
     }
 }
+
+void qr_iterations(double** matrix, double** result, int n) {
+    long unsigned int i, j, k, ii;
+
+    double** temp = init_matrix(n);
+    double** q = init_matrix(n);
+    double** r = init_matrix(n);
+
+    copy_matrix(result, matrix, n);
+
+    i = 0;
+    while(1) {
+        qr_decomposition(result, n, q, r);
+
+        naiveMatrixMultiply(n, r, q, temp);
+
+        double total = 0.0;
+
+        for (j = 0; j < n; j++) {
+            for (k = 0; k < n; k++) {
+                total += pow(temp[j][k] - result[j][k], 2);
+            }
+        }
+
+        if (total < convergence_threshold || i > 1000000L)
+            break;
+        
+        copy_matrix(result, temp, n);
+        i++;
+    }
+    free_matrix(temp, n);
+    free_matrix(q, n);
+    free_matrix(r, n);
+}
+
+void get_eigenvalues(double** matrix, double* eigenvalues, int n) {
+    double** result = init_matrix(n);
+    qr_iterations(matrix, result, n);
+    for (int i = 0; i < n; i++) {
+        eigenvalues[i] = result[i][i];
+    }
+    free_matrix(result, n);
+}
+
+void print_vector(double* vec, int n) {
+    printf("[");
+    for (int i = 0; i < n; i++) {
+        printf("%f, ", vec[i]);
+    }
+    printf("]\n");
+}
+
+
+#define N 32 // size of matrix
 
 int main() {
-    // def char_poly(lam):
-//     mat = deepcopy(a)
-//     for i in range(n):
-//         mat[i][i] -= lam
-//     return determinant(mat)
-    
+    time_t start_time = time(NULL);
     int rows = N;
     int cols = N;
     matrix = calloc(rows, sizeof(double*));
     fillMatrix(matrix, rows, cols);
+    print_matrix(matrix, rows, cols); printf("\n");
+    double* eigenvalues = calloc(rows, sizeof(double));
+    get_eigenvalues(matrix, eigenvalues, rows);
+
+    print_vector(eigenvalues, rows);
+    printf("\n\nRunning time: %lu second(s).\n", time(NULL) - start_time);
+    exit(EXIT_SUCCESS);
     // double d = det(matrix, N);
 
     // printf("%f\n", d);
@@ -354,15 +427,20 @@ int main() {
     // double** lower = lu_decomposition[0];
     // double** upper = lu_decomposition[1];
     // double** inverted = inverse(matrix, rows);
-
+    // double** q = init_matrix(N);
+    // double** r = init_matrix(N);
     print_matrix(matrix, rows, cols);
-    printf("\n");
+    // qr_decomposition(matrix, N, q, r);
+    printf("\nQ:\n");
+    print_matrix(matrix, N, N);
+    printf("\nR:\n");
+    // print_matrix(result, N, N);
     // print_matrix(inverted, rows, cols);
 
-    double root1 = bisection(characteristic_polynomial, -4, -1, 0.000001, 100000000);
-    double root2 = bisection(characteristic_polynomial, 1, 2, 0.000001, 100000000);
+    // double root1 = bisection(characteristic_polynomial, -4, -1, 0.000001, 100000000);
+    // double root2 = bisection(characteristic_polynomial, 1, 2, 0.000001, 100000000);
 
-    printf("roots:\n%f\n%f\n", root1, root2);
+    // printf("roots:\n%f\n%f\n", root1, root2);
 
     // free allocated resources
     free_matrix(matrix, rows);
