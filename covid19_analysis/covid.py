@@ -103,7 +103,6 @@ plt.legend()
 plt.show()
 
 
-
 y_data_fitted = []
 
 curve_fit_function = lambda t, a, b: a * exp(b * t)
@@ -114,11 +113,13 @@ params = curve_fit(f=curve_fit_function, xdata=x[45:], ydata=y[45:])[0]
 for i in range(0, 45):
     y_data_fitted.append(curve_fit_function(x[45:][i], params[0], params[1]))
 
-plt.plot(range(45, 90), y_data_fitted)
+plt.scatter(range(45, 90), y[45:], label="original", color='black')
+plt.plot(range(45, 90), y_data_fitted, label="fitted", color='r')
 plt.title("COVID-19 Infections for Second 45 Days (Curve Fitting)")
 plt.xlabel("Days")
 plt.yscale("symlog")
 plt.ylabel("Infected patients")
+plt.legend()
 plt.show()
 
 

@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from copy import deepcopy
 import scipy.optimize
 
+# extremely inefficient eigenvalue calculator by solving the characteristic polynomial
+
 n = 5
 a = [
     [3.0000, 6.0000, 7.0000, 5.0000, 3.0000],
