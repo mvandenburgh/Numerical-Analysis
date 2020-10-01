@@ -32,7 +32,7 @@ def integrate(f, a, b, n=1000000):
 
 
 def RK4(dydx, x0, y0, h, xn):
-    """ Approximates a first order differential equation using the classical 4th order Runge-Kutta 
+    """ Approximates a first order differential equation using the classical 4th order Runge-Kutta method. 
         Parameters:
             dydx: function representing differential equation to solve
             x0: initial x value
@@ -63,4 +63,30 @@ def RK4(dydx, x0, y0, h, xn):
         xs.append(x)
         ys.append(y)
     
+    return xs, ys
+
+
+def forwardEuler(dydx, x0, y0, h, xn):
+    """ Approximates a first order differential equation using the Forward Euler method.
+    Parameters:
+        dydx: function representing differential equation to solve
+        x0: initial x value
+        y0: initial y value
+        h: step-size
+        xn: x-value stopping point
+    """
+    xs = [x0]
+    ys = [y0]
+    i = 0
+    x = x0
+    if x0 > xn: h *= -1
+    while True:
+        if (x0 > xn and x < xn):
+            break
+        elif (x0 < xn and x > xn):
+            break
+        x = x + h
+        xs.append(x)
+        ys.append(ys[i] + h * dydx(xs[i],ys[i]))
+        i += 1
     return xs, ys
