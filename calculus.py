@@ -47,7 +47,7 @@ def RK4(dydx, x0, y0, h, xn):
     y = y0
     if x0 > xn: h *= -1
 
-    while (True):
+    while True:
         k0 = dydx(x, y)
         k1 = dydx(x + h/2, y + h/2 * k0)
         k2 = dydx(x + h/2, y + h/2 * k1)
