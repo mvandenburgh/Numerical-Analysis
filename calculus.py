@@ -56,9 +56,7 @@ def RK4(dydx, x0, y0, h, xn):
 
         x = x + h
         y = y + h * k
-        if (x0 > xn and x < xn):
-            break
-        elif (x0 < xn and x > xn):
+        if (x0 > xn and x < xn) or (x0 < xn and x > xn):
             break
         xs.append(x)
         ys.append(y)
@@ -81,9 +79,7 @@ def forwardEuler(dydx, x0, y0, h, xn):
     x = x0
     if x0 > xn: h *= -1
     while True:
-        if (x0 > xn and x < xn):
-            break
-        elif (x0 < xn and x > xn):
+        if (x0 > xn and x < xn) or (x0 < xn and x > xn):
             break
         x = x + h
         xs.append(x)

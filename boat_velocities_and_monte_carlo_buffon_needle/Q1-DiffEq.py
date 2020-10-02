@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from numpy import sqrt
 
 def RK4(dydx, x0, y0, h, xn):
-    """ Approximates a first order differential equation using the classical 4th order Runge-Kutta 
+    """ Approximates a first order differential equation using the classical 4th order Runge-Kutta method. 
         Parameters:
             dydx: function representing differential equation to solve
             x0: initial x value
@@ -26,9 +26,7 @@ def RK4(dydx, x0, y0, h, xn):
 
         x = x + h
         y = y + h * k
-        if (x0 > xn and x < xn):
-            break
-        elif (x0 < xn and x > xn):
+        if (x0 > xn and x < xn) or (x0 < xn and x > xn):
             break
         xs.append(x)
         ys.append(y)
