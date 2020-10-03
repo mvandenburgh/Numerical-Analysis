@@ -1,3 +1,5 @@
+from calculus import differentiate
+
 # Finds roots of function f given interval a and b using the bisection method
 def bisection(f, a, b, epsilon=0.00000000001, n=10000000000):
     for i in range(n):
@@ -15,11 +17,10 @@ def bisection(f, a, b, epsilon=0.00000000001, n=10000000000):
             return None
 
 
-# Finds roots of function f given fPrime (its derivative)
-# and an initial guess x0 using Newton's Method.
-def newton(f, fPrime, x0, iterations=100000):
+# Finds roots of function f, given an initial guess x0, using Newton's Method.
+def newton(f, x0, iterations=100000):
     for _ in range(iterations):
-        x0 = x0 - f(x0) / fPrime(x0)
+        x0 = x0 - f(x0) / differentiate(f, x0)
     return x0
 
 
