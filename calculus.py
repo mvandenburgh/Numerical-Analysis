@@ -1,3 +1,11 @@
+def differentiate(f, x, h=0.00000001):
+    """ Approximates the value of the derivative of the function f at some point x using finite difference approximations.
+        Parameters:
+            f: function to differentiate
+            x: point to evaluate derivative of f at
+    """
+    return (f(x+h) - f(x)) / h
+
 def integrate(f, a, b, n=1000000):
     """ Approximates the definite integral of the function f from a to b using Simpson's Rule. 
         Exception handling present to handle slight round-off/truncation errors that cause the function to be undefined.
